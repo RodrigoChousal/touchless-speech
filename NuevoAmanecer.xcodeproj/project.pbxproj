@@ -8,12 +8,15 @@
 
 /* Begin PBXBuildFile section */
 		C21CC9F421A324B800E9A7BB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21CC9F321A324B800E9A7BB /* AppDelegate.swift */; };
-		C21CC9F621A324B800E9A7BB /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21CC9F521A324B800E9A7BB /* ViewController.swift */; };
 		C21CC9F921A324B800E9A7BB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C21CC9F721A324B800E9A7BB /* Main.storyboard */; };
 		C21CC9FB21A324BA00E9A7BB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C21CC9FA21A324BA00E9A7BB /* Assets.xcassets */; };
 		C21CC9FE21A324BA00E9A7BB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C21CC9FC21A324BA00E9A7BB /* LaunchScreen.storyboard */; };
 		C21CCA0921A324BA00E9A7BB /* NuevoAmanecerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21CCA0821A324BA00E9A7BB /* NuevoAmanecerTests.swift */; };
 		C21CCA1421A324BA00E9A7BB /* NuevoAmanecerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21CCA1321A324BA00E9A7BB /* NuevoAmanecerUITests.swift */; };
+		C2849C8521ADB20A002CE3CB /* INAModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2849C8421ADB20A002CE3CB /* INAModel.swift */; };
+		C2849C8721ADB31A002CE3CB /* CardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2849C8621ADB31A002CE3CB /* CardViewController.swift */; };
+		C2849C8D21ADB8B3002CE3CB /* CardCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2849C8C21ADB8B3002CE3CB /* CardCollectionViewCell.swift */; };
+		C2849C9121ADBCB6002CE3CB /* SelectedWordCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2849C9021ADBCB6002CE3CB /* SelectedWordCollectionViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,7 +39,6 @@
 /* Begin PBXFileReference section */
 		C21CC9F021A324B800E9A7BB /* NuevoAmanecer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NuevoAmanecer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C21CC9F321A324B800E9A7BB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		C21CC9F521A324B800E9A7BB /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		C21CC9F821A324B800E9A7BB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		C21CC9FA21A324BA00E9A7BB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C21CC9FD21A324BA00E9A7BB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -47,6 +49,10 @@
 		C21CCA0F21A324BA00E9A7BB /* NuevoAmanecerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NuevoAmanecerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C21CCA1321A324BA00E9A7BB /* NuevoAmanecerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NuevoAmanecerUITests.swift; sourceTree = "<group>"; };
 		C21CCA1521A324BA00E9A7BB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C2849C8421ADB20A002CE3CB /* INAModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = INAModel.swift; sourceTree = "<group>"; };
+		C2849C8621ADB31A002CE3CB /* CardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardViewController.swift; sourceTree = "<group>"; };
+		C2849C8C21ADB8B3002CE3CB /* CardCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCollectionViewCell.swift; sourceTree = "<group>"; };
+		C2849C9021ADBCB6002CE3CB /* SelectedWordCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedWordCollectionViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,8 +104,11 @@
 			isa = PBXGroup;
 			children = (
 				C21CC9F321A324B800E9A7BB /* AppDelegate.swift */,
-				C21CC9F521A324B800E9A7BB /* ViewController.swift */,
+				C2849C8421ADB20A002CE3CB /* INAModel.swift */,
 				C21CC9F721A324B800E9A7BB /* Main.storyboard */,
+				C2849C8621ADB31A002CE3CB /* CardViewController.swift */,
+				C2849C8C21ADB8B3002CE3CB /* CardCollectionViewCell.swift */,
+				C2849C9021ADBCB6002CE3CB /* SelectedWordCollectionViewCell.swift */,
 				C21CC9FA21A324BA00E9A7BB /* Assets.xcassets */,
 				C21CC9FC21A324BA00E9A7BB /* LaunchScreen.storyboard */,
 				C21CC9FF21A324BA00E9A7BB /* Info.plist */,
@@ -256,8 +265,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C21CC9F621A324B800E9A7BB /* ViewController.swift in Sources */,
+				C2849C8D21ADB8B3002CE3CB /* CardCollectionViewCell.swift in Sources */,
 				C21CC9F421A324B800E9A7BB /* AppDelegate.swift in Sources */,
+				C2849C8521ADB20A002CE3CB /* INAModel.swift in Sources */,
+				C2849C8721ADB31A002CE3CB /* CardViewController.swift in Sources */,
+				C2849C9121ADBCB6002CE3CB /* SelectedWordCollectionViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
