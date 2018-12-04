@@ -18,7 +18,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6ry-VL-wNq">
+                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6ry-VL-wNq">
                                 <rect key="frame" x="0.0" y="0.0" width="768" height="200"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="A6T-06-em9">
@@ -34,8 +34,7 @@
                                         <color key="backgroundColor" red="0.0" green="0.56031829119999998" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <state key="normal" image="home"/>
                                         <connections>
-                                            <action selector="homePressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="xS0-KS-sLO"/>
-                                            <action selector="sayPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="FGR-gL-Cz5"/>
+                                            <action selector="homePressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="2bO-GK-rgr"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eA1-zm-h50">
@@ -47,7 +46,7 @@
                                         </connections>
                                     </button>
                                 </subviews>
-                                <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="backgroundColor" red="0.17254901960784313" green="0.24313725490196078" blue="0.31372549019607843" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstItem="1b9-sU-c0D" firstAttribute="width" secondItem="A6T-06-em9" secondAttribute="width" id="00M-ef-ble"/>
                                     <constraint firstItem="eA1-zm-h50" firstAttribute="top" secondItem="6ry-VL-wNq" secondAttribute="top" constant="65" id="5Ze-xa-HCf"/>
@@ -64,7 +63,7 @@
                                     <constraint firstItem="A6T-06-em9" firstAttribute="leading" secondItem="6ry-VL-wNq" secondAttribute="leading" constant="30" id="wC7-gJ-m4S"/>
                                 </constraints>
                             </view>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="cCK-VU-0PV">
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" pagingEnabled="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="cCK-VU-0PV">
                                 <rect key="frame" x="0.0" y="200" width="768" height="551"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="30" minimumInteritemSpacing="30" id="nFu-Rh-deb">
@@ -104,13 +103,13 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qG3-yG-YWE">
                                 <rect key="frame" x="0.0" y="751" width="768" height="273"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ie0-Lu-O8n">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ie0-Lu-O8n">
                                         <rect key="frame" x="29" y="30" width="340" height="100"/>
                                         <color key="backgroundColor" red="0.0" green="0.56031829119999998" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="width" relation="lessThanOrEqual" priority="999" constant="340" id="RpJ-fN-WJu"/>
                                         </constraints>
-                                        <state key="normal" backgroundImage="microphone"/>
+                                        <state key="normal" image="microphone"/>
                                         <connections>
                                             <action selector="sayPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="JX4-9f-awL"/>
                                         </connections>
@@ -121,7 +120,7 @@
                                         <constraints>
                                             <constraint firstAttribute="height" constant="90" id="qUD-Ub-GQy"/>
                                         </constraints>
-                                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="15" minimumInteritemSpacing="15" id="pbf-cI-K06">
+                                        <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="15" minimumInteritemSpacing="15" id="pbf-cI-K06">
                                             <size key="itemSize" width="251" height="59"/>
                                             <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                             <size key="footerReferenceSize" width="0.0" height="0.0"/>
@@ -129,7 +128,7 @@
                                         </collectionViewFlowLayout>
                                         <cells>
                                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="SelectedWordCell" id="FVJ-J2-18F" customClass="SelectedWordCollectionViewCell" customModule="NuevoAmanecer" customModuleProvider="target">
-                                                <rect key="frame" x="15" y="15" width="251" height="59"/>
+                                                <rect key="frame" x="15" y="15.5" width="251" height="59"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
                                                     <rect key="frame" x="0.0" y="0.0" width="251" height="59"/>
@@ -143,6 +142,7 @@
                                                         </label>
                                                     </subviews>
                                                 </view>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
                                                     <constraint firstAttribute="bottom" secondItem="Khl-gu-vN9" secondAttribute="bottom" id="a6Z-Tw-Nh5"/>
                                                     <constraint firstItem="Khl-gu-vN9" firstAttribute="leading" secondItem="FVJ-J2-18F" secondAttribute="leading" id="avi-9w-XL7"/>
@@ -155,19 +155,19 @@
                                             </collectionViewCell>
                                         </cells>
                                     </collectionView>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="h54-N7-Nh6">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="h54-N7-Nh6">
                                         <rect key="frame" x="399" y="30" width="340" height="100"/>
                                         <color key="backgroundColor" red="0.88235294119999996" green="0.2901960784" blue="0.23137254900000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="width" relation="lessThanOrEqual" priority="999" constant="340" id="2aw-bj-Ruo"/>
                                         </constraints>
-                                        <state key="normal" backgroundImage="trash"/>
+                                        <state key="normal" image="trash"/>
                                         <connections>
                                             <action selector="deletePressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="iNz-Kc-glP"/>
                                         </connections>
                                     </button>
                                 </subviews>
-                                <color key="backgroundColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="backgroundColor" red="0.17254901960784313" green="0.24313725490196078" blue="0.31372549019607843" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstItem="h54-N7-Nh6" firstAttribute="leading" secondItem="Ie0-Lu-O8n" secondAttribute="trailing" constant="30" id="2Ds-gg-ZLQ"/>
                                     <constraint firstItem="h54-N7-Nh6" firstAttribute="top" secondItem="qG3-yG-YWE" secondAttribute="top" constant="30" id="2Sy-x4-Yfs"/>
