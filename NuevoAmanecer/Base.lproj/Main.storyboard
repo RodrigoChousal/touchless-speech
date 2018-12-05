@@ -183,6 +183,11 @@
                                     <constraint firstAttribute="trailing" secondItem="jpv-OP-ACo" secondAttribute="trailing" constant="29" id="yxb-9B-l4A"/>
                                 </constraints>
                             </view>
+                            <view alpha="0.5" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="DBB-Mb-HDg">
+                                <rect key="frame" x="12" y="50" width="248" height="142"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="0.0" green="0.56031829119999998" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -206,6 +211,7 @@
                         <outlet property="homeButton" destination="1b9-sU-c0D" id="NYv-QL-0ru"/>
                         <outlet property="nextButton" destination="eA1-zm-h50" id="na4-oc-Hdj"/>
                         <outlet property="sayButton" destination="Ie0-Lu-O8n" id="DNv-Vm-epJ"/>
+                        <outlet property="selectionIndicatorView" destination="DBB-Mb-HDg" id="vZC-QF-6rN"/>
                         <outlet property="wordCollectionView" destination="jpv-OP-ACo" id="jSz-1x-mP1"/>
                     </connections>
                 </viewController>

@@ -8,10 +8,16 @@
 
 import UIKit
 import AVFoundation
+import AudioKit
+import CoreAudioKit
 
 var vocabulary = Vocabulary()
 
-class CardViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
+var mic: AKMicrophone!
+var tracker: AKFrequencyTracker!
+var silence: AKBooster!
+
+class CardViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, AVSpeechSynthesizerDelegate {
 	
 	@IBOutlet weak var backButton: UIButton!
 	@IBOutlet weak var homeButton: UIButton!
@@ -23,33 +29,58 @@ class CardViewController: UIViewController, UICollectionViewDelegate, UICollecti
 	@IBOutlet weak var deleteButton: UIButton!
 	@IBOutlet weak var wordCollectionView: UICollectionView!
 	
+	@IBOutlet weak var selectionIndicatorView: UIView!
+	
 	var speechSynth = AVSpeechSynthesizer()
 	
 	var isHome = true
 	var cards = [Card]()
 	var selectedWords = [WordCard]()
+	var selectionIndex = 0
 	
     override func viewDidLoad() {
         super.viewDidLoad()
 		
-		self.cards = vocabulary.categoryCards
-		
 		cardCollectionView.delegate = self
 		cardCollectionView.dataSource = self
 		
-        wordCollectionView.delegate = self
+		wordCollectionView.delegate = self
 		wordCollectionView.dataSource = self
 		
-		prepareRecorder()
+		speechSynth.delegate = self
+
+		self.cards = vocabulary.categoryCards
+		self.selectionIndicatorView.frame = backButton.frame
 		
-		wordCollectionView.layer.cornerRadius = 12
-		wordCollectionView.layer.borderWidth = 5
-		wordCollectionView.layer.borderColor = UIColor(red: 243/255, green: 156/255, blue: 17/255, alpha: 1.0).cgColor
-		wordCollectionView.backgroundColor = UIColor(red: 241/255, green: 195/255, blue: 15/255, alpha: 1.0)
+		prepareMic()
+		prepareAudioSession()
 		
 		if isHome { homeButton.isHidden = true }
 		makeButtonsPretty()
     }
+	
+	override func viewDidAppear(_ animated: Bool) {
+		AudioKit.output = silence
+		do {
+			try AudioKit.start()
+		} catch {
+			AKLog("AudioKit did not start!")
+		}
+		
+		// Print mic info timer
+		Timer.scheduledTimer(timeInterval: 0.1,
+							 target: self,
+							 selector: #selector(updateCounting),
+							 userInfo: nil,
+							 repeats: true)
+		
+		// Loop through buttons timer
+		Timer.scheduledTimer(timeInterval: 2.0,
+							 target: self,
+							 selector: #selector(highlightNextButton),
+							 userInfo: nil,
+							 repeats: true)
+	}
 	
 	// MARK: - CollectionViewDelegate
 	
@@ -135,26 +166,126 @@ class CardViewController: UIViewController, UICollectionViewDelegate, UICollecti
 		}
 	}
 	
+	// MARK: - AVSpeechSynthesizer Delegate
+	
+	func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didStart utterance: AVSpeechUtterance) {
+		print("Speech utterance didStart")
+	}
+	
+	func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
+		print("Speech utterance didFinish")
+	}
+	
 	// MARK: - Helper Methods
 	
-	func prepareRecorder() {
-		
-		var recordingSession = AVAudioSession.sharedInstance()
-		
+	func prepareMic() {
+		AKSettings.audioInputEnabled = true
+		mic = AKMicrophone()
+		tracker = AKFrequencyTracker(mic)
+		silence = AKBooster(tracker, gain: 0)
+	}
+	
+	func prepareAudioSession() {
+		let audioSession = AVAudioSession.sharedInstance()
 		do {
-			try recordingSession.setCategory(.playAndRecord, mode: .default)
-			try recordingSession.setActive(true)
-			recordingSession.requestRecordPermission() { [unowned self] allowed in
-				DispatchQueue.main.async {
-					if allowed {
-						self.loadRecordingUI()
-					} else {
-						self.loadFailUI()
+			try audioSession.setCategory(.playback, mode: .default)
+			try audioSession.setActive(true)
+		} catch {
+			print(error)
+		}
+	}
+	
+	@objc func updateCounting() {
+		
+		var selectableTop = [backButton, homeButton, nextButton]
+		if homeButton.isHidden { selectableTop = [backButton, nextButton] }
+		let selectableCells = cardCollectionView.visibleCells
+		let selectableBottom = [sayButton, deleteButton]
+		
+		let totalCount = selectableTop.count + selectableCells.count + selectableBottom.count
+		
+		let range1 = selectableTop.count
+		let range2 = totalCount - selectableBottom.count
+		
+		let realIndex = selectionIndex-1
+		
+		if tracker.frequency >= 200 {
+			//print("FREQUENCY:" + tracker.frequency.description)
+		}
+		
+		if tracker.amplitude >= 0.2 {
+			print("Real index: " + realIndex.description)
+			switch realIndex {
+			case _ where realIndex < range1: // 0, 1, 2
+				if let button = selectableTop[realIndex] {
+					print("Pressing left or right")
+					button.sendActions(for: .touchUpInside)
+				}
+			case _ where realIndex >= range1 && realIndex < range2: // 3
+				print("Selecting a cell")
+				let cell = selectableCells[realIndex-range1]
+				if let indexPath = cardCollectionView.indexPath(for: cell) {
+					cardCollectionView.selectItem(at: indexPath, animated: true, scrollPosition: .left)
+					self.collectionView(cardCollectionView, didSelectItemAt: indexPath)
+				}
+			case _ where realIndex >= range2: // 4, 5
+				print("Selecting bottom controls")
+				if let button = selectableBottom[realIndex-range2] {
+					button.sendActions(for: .touchUpInside)
+				}
+			default:
+				print("ERROR! No executable selection index")
+			}
+			//print("AMPLITUDE:" + tracker.amplitude.description)
+		}
+	}
+	
+	@objc func highlightNextButton() {
+		
+		var selectableTop = [backButton, homeButton, nextButton]
+		if homeButton.isHidden { selectableTop = [backButton, nextButton] }
+		let selectableCells = cardCollectionView.visibleCells
+		let selectableBottom = [sayButton, deleteButton]
+		
+		let totalCount = selectableTop.count + selectableCells.count + selectableBottom.count
+		
+		let range1 = selectableTop.count
+		let range2 = totalCount - selectableBottom.count
+		
+		print("Selecting: " + selectionIndex.description)
+		
+		for i in 0...(totalCount-1) {
+			if i == selectionIndex {
+				// Highlight that interactable
+				switch selectionIndex {
+				case _ where selectionIndex < range1: // 0, 1, 2
+					if let insideSelectable = selectableTop[selectionIndex] {
+						if let topView = backButton.superview {
+							let frameInView = topView.convert(insideSelectable.frame, to: view)
+							selectionIndicatorView.frame = frameInView
+						}
 					}
+				case _ where selectionIndex >= range1 && selectionIndex < range2: // 3
+					let insideSelectable = selectableCells[selectionIndex-range1]
+					let frameInView = cardCollectionView.convert(insideSelectable.frame, to: view)
+					selectionIndicatorView.frame = frameInView
+				case _ where selectionIndex >= range2: // 4, 5
+					if let insideSelectable = selectableBottom[selectionIndex-range2] {
+						if let bottomView = sayButton.superview {
+							let frameInView = bottomView.convert(insideSelectable.frame, to: view)
+							selectionIndicatorView.frame = frameInView
+						}
+					}
+				default:
+					print("ERROR! No executable selection index")
 				}
 			}
-		} catch {
-			self.loadFailUI()
+		}
+		
+		if selectionIndex != (totalCount - 1) {
+			selectionIndex += 1
+		} else {
+			selectionIndex = 0
 		}
 	}
 	
@@ -172,6 +303,12 @@ class CardViewController: UIViewController, UICollectionViewDelegate, UICollecti
 	}
 	
 	func makeButtonsPretty() {
+		
+		wordCollectionView.layer.cornerRadius = 12
+		wordCollectionView.layer.borderWidth = 5
+		wordCollectionView.layer.borderColor = UIColor(red: 243/255, green: 156/255, blue: 17/255, alpha: 1.0).cgColor
+		wordCollectionView.backgroundColor = UIColor(red: 241/255, green: 195/255, blue: 15/255, alpha: 1.0)
+		
 		backButton.layer.cornerRadius = backButton.frame.width*0.2
 		backButton.layer.borderWidth = 5
 		backButton.layer.borderColor = UIColor(red: 41/255, green: 128/255, blue: 185/255, alpha: 1.0).cgColor
