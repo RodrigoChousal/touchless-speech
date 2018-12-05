@@ -34,6 +34,7 @@ class CardViewController: UIViewController, UICollectionViewDelegate, UICollecti
 	var speechSynth = AVSpeechSynthesizer()
 	
 	var isHome = true
+	var cooledOff = true
 	var cards = [Card]()
 	var selectedWords = [WordCard]()
 	var selectionIndex = 0
@@ -52,6 +53,7 @@ class CardViewController: UIViewController, UICollectionViewDelegate, UICollecti
 		self.cards = vocabulary.categoryCards
 		self.selectionIndicatorView.frame = backButton.frame
 		
+		highlightNextButton()
 		prepareMic()
 		prepareAudioSession()
 		
@@ -70,7 +72,7 @@ class CardViewController: UIViewController, UICollectionViewDelegate, UICollecti
 		// Print mic info timer
 		Timer.scheduledTimer(timeInterval: 0.1,
 							 target: self,
-							 selector: #selector(updateCounting),
+							 selector: #selector(checkForHumming),
 							 userInfo: nil,
 							 repeats: true)
 		
@@ -199,53 +201,49 @@ class CardViewController: UIViewController, UICollectionViewDelegate, UICollecti
 		}
 	}
 	
-	@objc func updateCounting() {
-		
-		var selectableTop = [backButton, homeButton, nextButton]
-		if homeButton.isHidden { selectableTop = [backButton, nextButton] }
-		let selectableCells = cardCollectionView.visibleCells
-		let selectableBottom = [sayButton, deleteButton]
-		
-		let totalCount = selectableTop.count + selectableCells.count + selectableBottom.count
-		
-		let range1 = selectableTop.count
-		let range2 = totalCount - selectableBottom.count
-		
-		let realIndex = selectionIndex
-		
-		if tracker.frequency >= 200 {
-			//print("FREQUENCY:" + tracker.frequency.description)
-		}
-		
-		if tracker.amplitude >= 0.2 {
-			print("Real index: " + realIndex.description)
-			switch realIndex {
-			case _ where realIndex < range1: // 0, 1, 2
-				if let button = selectableTop[realIndex] {
-					print("Pressing left or right")
-					button.sendActions(for: .touchUpInside)
+	@objc func checkForHumming() {
+		if cooledOff {
+			cooledOff = false
+			var selectableTop = [backButton, homeButton, nextButton]
+			if homeButton.isHidden { selectableTop = [backButton, nextButton] }
+			let selectableCells = cardCollectionView.visibleCells
+			let selectableBottom = [sayButton, deleteButton]
+			
+			let totalCount = selectableTop.count + selectableCells.count + selectableBottom.count
+			
+			let range1 = selectableTop.count
+			let range2 = totalCount - selectableBottom.count
+			
+			let realIndex = selectionIndex
+			
+			print("Selecting: " + realIndex.description)
+			if tracker.amplitude >= 0.2 {
+				switch realIndex {
+				case _ where realIndex < range1: // 0, 1, 2
+					if let button = selectableTop[realIndex] {
+						button.sendActions(for: .touchUpInside)
+					}
+				case _ where realIndex >= range1 && realIndex < range2: // 3
+					let cell = selectableCells[realIndex-range1]
+					if let indexPath = cardCollectionView.indexPath(for: cell) {
+						cardCollectionView.selectItem(at: indexPath, animated: true, scrollPosition: .left)
+						self.collectionView(cardCollectionView, didSelectItemAt: indexPath)
+					}
+				case _ where realIndex >= range2: // 4, 5
+					if let button = selectableBottom[realIndex-range2] {
+						button.sendActions(for: .touchUpInside)
+					}
+				default:
+					print("ERROR! No executable selection index")
 				}
-			case _ where realIndex >= range1 && realIndex < range2: // 3
-				print("Selecting a cell")
-				let cell = selectableCells[realIndex-range1]
-				if let indexPath = cardCollectionView.indexPath(for: cell) {
-					cardCollectionView.selectItem(at: indexPath, animated: true, scrollPosition: .left)
-					self.collectionView(cardCollectionView, didSelectItemAt: indexPath)
-				}
-			case _ where realIndex >= range2: // 4, 5
-				print("Selecting bottom controls")
-				if let button = selectableBottom[realIndex-range2] {
-					button.sendActions(for: .touchUpInside)
-				}
-			default:
-				print("ERROR! No executable selection index")
 			}
-			//print("AMPLITUDE:" + tracker.amplitude.description)
 		}
 	}
 	
 	@objc func highlightNextButton() {
 		
+		cooledOff = true
+		
 		var selectableTop = [backButton, homeButton, nextButton]
 		if homeButton.isHidden { selectableTop = [backButton, nextButton] }
 		let selectableCells = cardCollectionView.visibleCells
@@ -256,7 +254,13 @@ class CardViewController: UIViewController, UICollectionViewDelegate, UICollecti
 		let range1 = selectableTop.count
 		let range2 = totalCount - selectableBottom.count
 		
-		print("Selecting: " + selectionIndex.description)
+		if selectionIndex != (totalCount - 1) {
+			selectionIndex += 1
+		} else {
+			selectionIndex = 0
+		}
+		
+		print("Highlighting: " + selectionIndex.description)
 		
 		for i in 0...(totalCount-1) {
 			if i == selectionIndex {
@@ -284,12 +288,6 @@ class CardViewController: UIViewController, UICollectionViewDelegate, UICollecti
 					print("ERROR! No executable selection index")
 				}
 			}
-		}
-		
-		if selectionIndex != (totalCount - 1) {
-			selectionIndex += 1
-		} else {
-			selectionIndex = 0
 		}
 	}
 	
