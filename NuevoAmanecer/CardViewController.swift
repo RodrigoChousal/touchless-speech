@@ -75,7 +75,7 @@ class CardViewController: UIViewController, UICollectionViewDelegate, UICollecti
 							 repeats: true)
 		
 		// Loop through buttons timer
-		Timer.scheduledTimer(timeInterval: 2.0,
+		Timer.scheduledTimer(timeInterval: 1.0,
 							 target: self,
 							 selector: #selector(highlightNextButton),
 							 userInfo: nil,
@@ -169,11 +169,15 @@ class CardViewController: UIViewController, UICollectionViewDelegate, UICollecti
 	// MARK: - AVSpeechSynthesizer Delegate
 	
 	func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didStart utterance: AVSpeechUtterance) {
-		print("Speech utterance didStart")
-	}
-	
-	func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
-		print("Speech utterance didFinish")
+		AKSettings.audioInputEnabled = true
+		let audioSession = AVAudioSession.sharedInstance()
+		do {
+			try audioSession.overrideOutputAudioPort(.speaker)
+			try audioSession.setCategory(.playAndRecord, mode: .default)
+			try audioSession.setActive(true)
+		} catch {
+			print(error)
+		}
 	}
 	
 	// MARK: - Helper Methods
@@ -188,7 +192,7 @@ class CardViewController: UIViewController, UICollectionViewDelegate, UICollecti
 	func prepareAudioSession() {
 		let audioSession = AVAudioSession.sharedInstance()
 		do {
-			try audioSession.setCategory(.playback, mode: .default)
+			try audioSession.setCategory(.record, mode: .default)
 			try audioSession.setActive(true)
 		} catch {
 			print(error)
@@ -207,7 +211,7 @@ class CardViewController: UIViewController, UICollectionViewDelegate, UICollecti
 		let range1 = selectableTop.count
 		let range2 = totalCount - selectableBottom.count
 		
-		let realIndex = selectionIndex-1
+		let realIndex = selectionIndex
 		
 		if tracker.frequency >= 200 {
 			//print("FREQUENCY:" + tracker.frequency.description)
