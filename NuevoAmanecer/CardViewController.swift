@@ -203,7 +203,6 @@ class CardViewController: UIViewController, UICollectionViewDelegate, UICollecti
 	
 	@objc func checkForHumming() {
 		if cooledOff {
-			cooledOff = false
 			var selectableTop = [backButton, homeButton, nextButton]
 			if homeButton.isHidden { selectableTop = [backButton, nextButton] }
 			let selectableCells = cardCollectionView.visibleCells
@@ -218,6 +217,7 @@ class CardViewController: UIViewController, UICollectionViewDelegate, UICollecti
 			
 			print("Selecting: " + realIndex.description)
 			if tracker.amplitude >= 0.2 {
+				cooledOff = false
 				switch realIndex {
 				case _ where realIndex < range1: // 0, 1, 2
 					if let button = selectableTop[realIndex] {
