@@ -77,7 +77,7 @@ class CardViewController: UIViewController, UICollectionViewDelegate, UICollecti
 							 repeats: true)
 		
 		// Loop through buttons timer
-		Timer.scheduledTimer(timeInterval: 1.0,
+		Timer.scheduledTimer(timeInterval: 2.0,
 							 target: self,
 							 selector: #selector(highlightNextButton),
 							 userInfo: nil,
@@ -175,7 +175,12 @@ class CardViewController: UIViewController, UICollectionViewDelegate, UICollecti
 		let audioSession = AVAudioSession.sharedInstance()
 		do {
 			try audioSession.overrideOutputAudioPort(.speaker)
-			try audioSession.setCategory(.playAndRecord, mode: .default)
+			if #available(iOS 10.0, *) {
+				try audioSession.setCategory(.playAndRecord, mode: .default)
+			} else {
+				// Workaround until https://forums.swift.org/t/using-methods-marked-unavailable-in-swift-4-2/14949 isn't fixed
+				audioSession.perform(NSSelectorFromString("setCategory:error:"), with: AVAudioSession.Category.playAndRecord)
+			}
 			try audioSession.setActive(true)
 		} catch {
 			print(error)
@@ -194,7 +199,12 @@ class CardViewController: UIViewController, UICollectionViewDelegate, UICollecti
 	func prepareAudioSession() {
 		let audioSession = AVAudioSession.sharedInstance()
 		do {
-			try audioSession.setCategory(.record, mode: .default)
+			if #available(iOS 10.0, *) {
+				try audioSession.setCategory(.record, mode: .default)
+			} else {
+				// Workaround until https://forums.swift.org/t/using-methods-marked-unavailable-in-swift-4-2/14949 isn't fixed
+				audioSession.perform(NSSelectorFromString("setCategory:error:"), with: AVAudioSession.Category.record)
+			}
 			try audioSession.setActive(true)
 		} catch {
 			print(error)
@@ -216,7 +226,7 @@ class CardViewController: UIViewController, UICollectionViewDelegate, UICollecti
 			let realIndex = selectionIndex
 			
 			print("Selecting: " + realIndex.description)
-			if tracker.amplitude >= 0.2 {
+			if tracker.amplitude >= 0.05 {
 				cooledOff = false
 				switch realIndex {
 				case _ where realIndex < range1: // 0, 1, 2
