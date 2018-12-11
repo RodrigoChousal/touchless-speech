@@ -31,6 +31,10 @@ class CardViewController: UIViewController, UICollectionViewDelegate, UICollecti
 	
 	@IBOutlet weak var selectionIndicatorView: UIView!
 	
+	var speed: Float = 1.0
+	var sensibility: Float = 2.0
+	var isBarrido: Bool = false
+	
 	var speechSynth = AVSpeechSynthesizer()
 	
 	var isHome = true
@@ -69,19 +73,25 @@ class CardViewController: UIViewController, UICollectionViewDelegate, UICollecti
 			AKLog("AudioKit did not start!")
 		}
 		
-		// Print mic info timer
-		Timer.scheduledTimer(timeInterval: 0.1,
-							 target: self,
-							 selector: #selector(checkForHumming),
-							 userInfo: nil,
-							 repeats: true)
-		
-		// Loop through buttons timer
-		Timer.scheduledTimer(timeInterval: 2.0,
-							 target: self,
-							 selector: #selector(highlightNextButton),
-							 userInfo: nil,
-							 repeats: true)
+		if isBarrido {
+			selectionIndicatorView.isHidden = false
+			
+			// Print mic info timer
+			Timer.scheduledTimer(timeInterval: 0.1,
+								 target: self,
+								 selector: #selector(checkForHumming),
+								 userInfo: nil,
+								 repeats: true)
+			
+			// Loop through buttons timer
+			Timer.scheduledTimer(timeInterval: TimeInterval(speed),
+								 target: self,
+								 selector: #selector(highlightNextButton),
+								 userInfo: nil,
+								 repeats: true)
+		} else {
+			selectionIndicatorView.isHidden = true
+		}
 	}
 	
 	// MARK: - CollectionViewDelegate
@@ -226,7 +236,7 @@ class CardViewController: UIViewController, UICollectionViewDelegate, UICollecti
 			let realIndex = selectionIndex
 			
 			print("Selecting: " + realIndex.description)
-			if tracker.amplitude >= 0.05 {
+			if tracker.amplitude >= sensibility/10 {
 				cooledOff = false
 				switch realIndex {
 				case _ where realIndex < range1: // 0, 1, 2
