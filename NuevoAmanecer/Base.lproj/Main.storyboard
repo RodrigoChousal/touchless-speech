@@ -52,7 +52,7 @@
                                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <state key="normal" title="Ajustes"/>
                                         <connections>
-                                            <segue destination="utU-xO-Yqz" kind="presentation" id="689-6q-Ors"/>
+                                            <segue destination="utU-xO-Yqz" kind="presentation" identifier="SettingsSegue" id="689-6q-Ors"/>
                                         </connections>
                                     </button>
                                 </subviews>

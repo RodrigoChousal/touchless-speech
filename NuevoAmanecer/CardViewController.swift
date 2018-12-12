@@ -99,9 +99,9 @@ class CardViewController: UIViewController, UICollectionViewDelegate, UICollecti
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 		if segue.identifier == "SettingsSegue" {
 			let settingsTVC = segue.destination as! SettingsTableViewController
-			self.speed = settingsTVC.speed
-			self.sensibility = settingsTVC.sensibility
-			self.isBarrido = settingsTVC.isBarrido
+			settingsTVC.speed = self.speed
+			settingsTVC.sensibility = self.sensibility
+			settingsTVC.isBarrido = self.isBarrido
 		}
 	}
 	
