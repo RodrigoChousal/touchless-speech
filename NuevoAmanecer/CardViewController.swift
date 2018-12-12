@@ -33,7 +33,7 @@ class CardViewController: UIViewController, UICollectionViewDelegate, UICollecti
 	
 	var speed: Float = 1.0
 	var sensibility: Float = 2.0
-	var isBarrido: Bool = false
+	var isBarrido: Bool = true
 	
 	var speechSynth = AVSpeechSynthesizer()
 	
@@ -91,6 +91,17 @@ class CardViewController: UIViewController, UICollectionViewDelegate, UICollecti
 								 repeats: true)
 		} else {
 			selectionIndicatorView.isHidden = true
+		}
+	}
+	
+	// MARK: - Navigation
+	
+	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+		if segue.identifier == "SettingsSegue" {
+			let settingsTVC = segue.destination as! SettingsTableViewController
+			self.speed = settingsTVC.speed
+			self.sensibility = settingsTVC.sensibility
+			self.isBarrido = settingsTVC.isBarrido
 		}
 	}
 	
