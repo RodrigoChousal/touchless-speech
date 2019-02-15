@@ -9,7 +9,5 @@
 import UIKit
 
 class SelectedWordCollectionViewCell: UICollectionViewCell {
-	
 	@IBOutlet weak var titleLabel: UILabel!
-	
 }

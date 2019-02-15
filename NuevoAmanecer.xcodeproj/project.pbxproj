@@ -147,12 +147,12 @@
 			children = (
 				C21CC9F321A324B800E9A7BB /* AppDelegate.swift */,
 				C2849C8421ADB20A002CE3CB /* INAModel.swift */,
-				C21CC9F721A324B800E9A7BB /* Main.storyboard */,
 				C28D5D2021C034C4005474F3 /* SettingsTableViewController.swift */,
 				C2849C8621ADB31A002CE3CB /* CardViewController.swift */,
 				C2849C8C21ADB8B3002CE3CB /* CardCollectionViewCell.swift */,
 				C2849C9021ADBCB6002CE3CB /* SelectedWordCollectionViewCell.swift */,
 				C21CC9FA21A324BA00E9A7BB /* Assets.xcassets */,
+				C21CC9F721A324B800E9A7BB /* Main.storyboard */,
 				C21CC9FC21A324BA00E9A7BB /* LaunchScreen.storyboard */,
 				C21CC9FF21A324BA00E9A7BB /* Info.plist */,
 			);

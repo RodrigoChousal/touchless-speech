@@ -17,7 +17,7 @@ var mic: AKMicrophone!
 var tracker: AKFrequencyTracker!
 var silence: AKBooster!
 
-class CardViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, AVSpeechSynthesizerDelegate {
+class CardViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, AVSpeechSynthesizerDelegate {
 	
 	@IBOutlet weak var backButton: UIButton!
 	@IBOutlet weak var homeButton: UIButton!
@@ -36,6 +36,9 @@ class CardViewController: UIViewController, UICollectionViewDelegate, UICollecti
 	var isBarrido: Bool = true
 	
 	var speechSynth = AVSpeechSynthesizer()
+	
+	var highlightTimer = Timer()
+	var hummingTimer = Timer()
 	
 	var isHome = true
 	var cooledOff = true
@@ -73,18 +76,21 @@ class CardViewController: UIViewController, UICollectionViewDelegate, UICollecti
 			AKLog("AudioKit did not start!")
 		}
 		
+		print("view did appear with speed: " + self.speed.description)
+		
 		if isBarrido {
 			selectionIndicatorView.isHidden = false
 			
 			// Print mic info timer
-			Timer.scheduledTimer(timeInterval: 0.1,
+			hummingTimer = Timer.scheduledTimer(timeInterval: 0.1,
 								 target: self,
 								 selector: #selector(checkForHumming),
 								 userInfo: nil,
 								 repeats: true)
 			
+			print("starting timer with interval: " + speed.description)
 			// Loop through buttons timer
-			Timer.scheduledTimer(timeInterval: TimeInterval(speed),
+			highlightTimer = Timer.scheduledTimer(timeInterval: TimeInterval(speed),
 								 target: self,
 								 selector: #selector(highlightNextButton),
 								 userInfo: nil,
@@ -98,6 +104,10 @@ class CardViewController: UIViewController, UICollectionViewDelegate, UICollecti
 	
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 		if segue.identifier == "SettingsSegue" {
+			
+			highlightTimer.invalidate()
+			hummingTimer.invalidate()
+			
 			let settingsTVC = segue.destination as! SettingsTableViewController
 			settingsTVC.speed = self.speed
 			settingsTVC.sensibility = self.sensibility
@@ -145,7 +155,44 @@ class CardViewController: UIViewController, UICollectionViewDelegate, UICollecti
 			return cell
 		}
 	}
-	
+    
+    // MARK: - CollectionViewDelegateFlowLayou
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        if collectionView == self.cardCollectionView {
+            let width = collectionView.bounds.width/2.0
+            return CGSize(width: width, height: width/2.0)
+        } else {
+            let width = collectionView.bounds.width/3.0
+            let height = collectionView.bounds.height/1.5
+            return CGSize(width: width, height: height)
+        }
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        if collectionView == self.cardCollectionView {
+            return UIEdgeInsets.zero
+        } else {
+            return UIEdgeInsets(top: 15, left: 15, bottom: 15, right: 15)
+        }
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        if collectionView == self.cardCollectionView {
+            return 0
+        } else {
+            return 15
+        }
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        if collectionView == self.cardCollectionView {
+            return 0
+        } else {
+            return 15
+        }
+    }
+    
 	// MARK: - Action Methods
 	
 	@IBAction func backPressed(_ sender: Any) {
@@ -246,7 +293,6 @@ class CardViewController: UIViewController, UICollectionViewDelegate, UICollecti
 			
 			let realIndex = selectionIndex
 			
-			print("Selecting: " + realIndex.description)
 			if tracker.amplitude >= sensibility/10 {
 				cooledOff = false
 				switch realIndex {
@@ -290,8 +336,6 @@ class CardViewController: UIViewController, UICollectionViewDelegate, UICollecti
 		} else {
 			selectionIndex = 0
 		}
-		
-		print("Highlighting: " + selectionIndex.description)
 		
 		for i in 0...(totalCount-1) {
 			if i == selectionIndex {

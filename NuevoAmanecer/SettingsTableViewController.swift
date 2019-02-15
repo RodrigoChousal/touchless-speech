@@ -29,14 +29,16 @@ class SettingsTableViewController: UITableViewController {
 				
 		sensibilitySlider.maximumValue = 10.0
 		sensibilitySlider.minimumValue = 0.1
-		
+    }
+	
+	override func viewDidAppear(_ animated: Bool) {
 		self.speedLabel.text = speed.description
 		self.sensibilityLabel.text = sensibility.description
 		
 		self.sensibilitySlider.value = sensibility
 		self.speedSlider.value = speed
 		self.barridoSwitch.isOn = isBarrido
-    }
+	}
 
     // MARK: - Table view data source
 
@@ -47,26 +49,16 @@ class SettingsTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 3
     }
-
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let cardVC = segue.destination as! CardViewController
-		cardVC.speed = self.speed
-		cardVC.sensibility = self.sensibility
-		cardVC.isBarrido = self.isBarrido
-    }
 	
 	// MARK: - Action Methods
 	
 	@IBAction func speedChanged(_ sender: Any) {
-		speedLabel.text = speedSlider.value.description
+		speedLabel.text = String(format: "%.01f", speedSlider.value)
 		speed = speedSlider.value
 	}
 	
 	@IBAction func sensibilityChanged(_ sender: Any) {
-		sensibilityLabel.text = sensibilitySlider.value.description
+		sensibilityLabel.text = String(format: "%.01f", sensibilitySlider.value)
 		sensibility = sensibilitySlider.value
 	}
 	
@@ -74,7 +66,13 @@ class SettingsTableViewController: UITableViewController {
 		isBarrido = barridoSwitch.isOn
 	}
 	
-	@IBAction func cancelPressed(_ sender: Any) {
+	@IBAction func finishPressed(_ sender: Any) {
+		if let cardVC = self.presentingViewController as? CardViewController {
+			cardVC.speed = self.speed
+			cardVC.sensibility = self.sensibility
+			cardVC.isBarrido = self.isBarrido
+		}
 		self.dismiss(animated: true, completion: nil)
 	}
+	
 }
