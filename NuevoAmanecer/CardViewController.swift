@@ -75,9 +75,7 @@ class CardViewController: UIViewController, UICollectionViewDelegate, UICollecti
 		} catch {
 			AKLog("AudioKit did not start!")
 		}
-		
-		print("view did appear with speed: " + self.speed.description)
-		
+				
 		if isBarrido {
 			selectionIndicatorView.isHidden = false
 			
@@ -104,10 +102,8 @@ class CardViewController: UIViewController, UICollectionViewDelegate, UICollecti
 	
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 		if segue.identifier == "SettingsSegue" {
-			
 			highlightTimer.invalidate()
 			hummingTimer.invalidate()
-			
 			let settingsTVC = segue.destination as! SettingsTableViewController
 			settingsTVC.speed = self.speed
 			settingsTVC.sensibility = self.sensibility
@@ -142,6 +138,7 @@ class CardViewController: UIViewController, UICollectionViewDelegate, UICollecti
 	}
 	
 	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        print(indexPath)
 		if collectionView == self.cardCollectionView {
 			let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CardCell", for: indexPath) as! CardCollectionViewCell
 			cell.titleLabel.text = self.cards[indexPath.row].title
@@ -156,7 +153,7 @@ class CardViewController: UIViewController, UICollectionViewDelegate, UICollecti
 		}
 	}
     
-    // MARK: - CollectionViewDelegateFlowLayou
+    // MARK: - CollectionViewDelegateFlowLayout
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if collectionView == self.cardCollectionView {
@@ -196,21 +193,22 @@ class CardViewController: UIViewController, UICollectionViewDelegate, UICollecti
 	// MARK: - Action Methods
 	
 	@IBAction func backPressed(_ sender: Any) {
-		let offsetPerCard = cardCollectionView.contentSize.width/CGFloat(cards.count)
-		let newOffset = cardCollectionView.contentOffset.x - offsetPerCard
-		if newOffset > 0 {
-			cardCollectionView.contentOffset.x -= offsetPerCard
-		}
+        if let firstCell = cardCollectionView.visibleCells.first, let oldIndex = cardCollectionView.indexPath(for: firstCell) {
+            if oldIndex.row - 1 >= 0 {
+                let newIndex = IndexPath(row: oldIndex.row-1, section: oldIndex.section)
+                cardCollectionView.scrollToItem(at: newIndex, at: .right, animated: true)
+            }
+        }
 	}
 	
 	@IBAction func nextPressed(_ sender: Any) {
-		let scrollWidth = cardCollectionView.contentSize.width
-		let offsetPerCard = cardCollectionView.contentSize.width/CGFloat(cards.count)
-		let newOffset = cardCollectionView.contentOffset.x + offsetPerCard
-		if newOffset < scrollWidth {
-			cardCollectionView.contentOffset.x += offsetPerCard
-		}
-	}
+        if let lastCell = cardCollectionView.visibleCells.last, let oldIndex = cardCollectionView.indexPath(for: lastCell) {
+            let newIndex = IndexPath(row: oldIndex.row+1, section: oldIndex.section)
+            if self.cardCollectionView.cellForItem(at: newIndex) != nil {
+                cardCollectionView.scrollToItem(at: newIndex, at: .left, animated: true)
+            }
+        }
+    }
 	
 	@IBAction func homePressed(_ sender: Any) {
 		self.isHome = true
